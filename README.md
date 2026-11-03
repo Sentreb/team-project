@@ -1,4 +1,4 @@
-# [Project Name] Meal Planner
+# SOLID Meals: Meal Planner
 
 ## Team Information
 
