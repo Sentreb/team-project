@@ -85,7 +85,7 @@ As a user, I want a grocery list generated from my weekly plan that I can check 
 - **Trigger:** The user asks to add a saved recipe to the weekly plan.
 - **Success outcome:** The chosen day and meal slot in the weekly plan holds the chosen recipe, and the plan is kept between sessions.
 - **Main success scenario:**
-  1. The user chooses a saved recipe, a day of the week and a meal slot (breakfast, lunch or dinner).
+  1. The user chooses a saved recipe, a day of the week and a meal slot.
   2. The system checks that the slot is empty.
   3. The system records the recipe in that slot of the weekly plan.
   4. The system shows the updated weekly plan.
