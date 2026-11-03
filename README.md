@@ -43,47 +43,76 @@ As a user, I want a grocery list generated from my weekly plan that I can check 
 ## Use Cases
 
 ### Use Case 1: Search Recipes
-- **Actor:** User
-- **Main Flow:**
-  1. User enters a recipe name or an ingredient and chooses the search type.
-  2. System queries TheMealDB API.
-  3. System displays a list of matching recipes with name, category and image.
-- **Alternative Flows:**
-  - No results: system shows "No recipes found."
-  - Network or API error: system shows an error message and keeps the previous results.
+- **Primary actor:** User
+- **Supporting actor:** TheMealDB (external recipe service)
+- **Preconditions:** None.
+- **Trigger:** The user asks to search for recipes by name or by ingredient.
+- **Success outcome:** The user sees the recipes that match their search, each with its name, category and image.
+- **Main success scenario:**
+  1. The user enters a recipe name or a single ingredient and says which kind of search it is.
+  2. The system requests matching recipes from the recipe service.
+  3. The system displays the matching recipes with their name, category and image.
+- **Extensions:**
+  - **2a.** The recipe service cannot be reached or returns an error.
+    1. The system explains that the search failed and the user may try again.
+    2. The previously displayed results remain, and the use case ends.
+  - **2b.** No recipes match.
+    1. The system tells the user that no recipes were found, and the use case ends.
 
 ### Use Case 2: Save Recipe
-- **Actor:** User
-- **Precondition:** User is viewing search results.
-- **Main Flow:**
-  1. User selects a recipe and clicks "Save".
-  2. System fetches the full recipe details from TheMealDB.
-  3. System stores the recipe in the user's collection.
-  4. System confirms the recipe was saved.
-- **Alternative Flows:**
-  - Recipe already saved: system shows "Recipe already in your collection."
-  - API error: system shows an error and saves nothing.
+- **Primary actor:** User
+- **Supporting actor:** TheMealDB (external recipe service)
+- **Preconditions:** The user is viewing search results.
+- **Trigger:** The user asks to save one of the displayed recipes.
+- **Success outcome:** The recipe, with its full ingredients, measures and instructions, is in the user's saved collection and is still there after the app restarts.
+- **Main success scenario:**
+  1. The user asks to save a recipe from the results.
+  2. The system checks that the recipe is not already in the user's collection.
+  3. The system retrieves the recipe's full details from the recipe service.
+  4. The system stores the recipe in the user's collection.
+  5. The system tells the user the recipe was saved.
+- **Extensions:**
+  - **2a.** The recipe is already in the collection.
+    1. The system tells the user the recipe is already in their collection.
+    2. The collection is unchanged, and the use case ends.
+  - **3a.** The recipe service cannot provide the details.
+    1. The system explains that the recipe was not saved and the user may try again.
+    2. Nothing is saved, and the use case ends.
 
 ### Use Case 3: Add Meal to Plan
-- **Actor:** User
-- **Precondition:** User has at least one saved recipe.
-- **Main Flow:**
-  1. User selects a saved recipe, a day of the week and a meal slot.
-  2. System adds the entry to the weekly plan and stores it.
-  3. System updates the weekly plan view.
-- **Alternative Flows:**
-  - Slot already filled: system asks whether to replace the existing meal.
+- **Primary actor:** User
+- **Preconditions:** The user has at least one saved recipe.
+- **Trigger:** The user asks to add a saved recipe to the weekly plan.
+- **Success outcome:** The chosen day and meal slot in the weekly plan holds the chosen recipe, and the plan is kept between sessions.
+- **Main success scenario:**
+  1. The user chooses a saved recipe, a day of the week and a meal slot (breakfast, lunch or dinner).
+  2. The system checks that the slot is empty.
+  3. The system records the recipe in that slot of the weekly plan.
+  4. The system shows the updated weekly plan.
+- **Extensions:**
+  - **2a.** The slot already holds a meal.
+    1. The system shows the meal currently in the slot and asks whether to replace it.
+    2. If the user confirms, the use case continues at step 3 and the new recipe replaces the old one.
+    3. If the user declines, the plan is unchanged and the use case ends.
+  - **3a.** The system cannot record the entry.
+    1. The system explains that the meal was not added and the user may try again.
+    2. The plan is unchanged, and the use case ends.
 
 ### Use Case 4: Generate Grocery List
-- **Actor:** User
-- **Precondition:** The weekly plan has at least one meal.
-- **Main Flow:**
-  1. User clicks "Generate grocery list".
-  2. System collects the ingredients of every planned recipe.
-  3. System groups ingredients by name and lists their measures.
-  4. System stores and displays the grocery list.
-- **Alternative Flows:**
-  - Empty plan: system shows "Add meals to your plan first."
+- **Primary actor:** User
+- **Preconditions:** None.
+- **Trigger:** The user asks for a grocery list for their weekly plan.
+- **Success outcome:** A grocery list is saved and shown. It contains every ingredient from the planned meals, with each ingredient listed once alongside all of its measures.
+- **Main success scenario:**
+  1. The user asks to generate a grocery list.
+  2. The system gathers the ingredients of every recipe in the weekly plan.
+  3. The system combines ingredients with the same name, keeping each measure.
+  4. The system saves the grocery list, replacing any previous list.
+  5. The system displays the grocery list.
+- **Extensions:**
+  - **2a.** The weekly plan has no meals.
+    1. The system tells the user to add meals to their plan first.
+    2. No list is created, and the use case ends.
 
 ### Use Cases After MVP
 - **Edit Saved Recipe:** update notes, ingredients or servings of a saved recipe.
