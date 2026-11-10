@@ -46,7 +46,7 @@ public final class GroceryItem {
     }
 
     public List<String> getMeasures() {
-        // To prevent editing the internal list, we return an unmodifiedlist version instead.
+        // To prevent editing the internal list, we return an unmodifiable list version instead.
         return Collections.unmodifiableList(this.measures);
     }
 
