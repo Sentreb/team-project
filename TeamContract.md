@@ -69,7 +69,7 @@ By signing below, we acknowledge that we have read, discussed, and agreed to the
 
 Team Member Signatures:
 
-Mochammad Fathirrazi Nafisandy
-Clifford Nathanael Julienson
-Alang Babega Mahareza
+Mochammad Fathirrazi Nafisandy\
+Clifford Nathanael Julienson\
+Alang Babega Mahareza\
 Muhammad Fauzan Hidayat
