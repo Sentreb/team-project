@@ -12,10 +12,6 @@ import java.util.List;
 public class MealPlan {
     private final LocalDate weekStartDate;
     private final List<MealPlanEntry> entries;
-
-    /**
-     * Creates an empty plan for the week starting on weekStartDate.
-     */
     /**
      * Creates an empty plan for the week starting on weekStartDate.
      *
