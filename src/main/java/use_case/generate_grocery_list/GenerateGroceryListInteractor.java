@@ -30,7 +30,7 @@ public class GenerateGroceryListInteractor implements GenerateGroceryListInputBo
         // 4. save the list through the DAO (replaces the old one)
         // 5. prepareSuccessView
         MealPlan plan = dataAccess.getMealPlan();
-        List<Recipe> recipes = plan.getAllRecipes(); // Wait for C.
+        List<Recipe> recipes = plan.getAllRecipes();
         if (recipes.isEmpty()) {
             presenter.prepareFailView("Add meals to your plan first.");
             return;
