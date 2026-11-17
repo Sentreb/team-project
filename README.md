@@ -146,11 +146,14 @@ As a user, I want a grocery list generated from my weekly plan that I can check 
 
 ### MealPlan
 - **Instance variables:** `weekStartDate`, `entries: List<MealPlanEntry>`
-- **Methods:** `addEntry(MealPlanEntry)`, `removeEntry(DayOfWeek, MealType)`, `getEntriesForDay(DayOfWeek)`, `getAllRecipes()`
+- **Methods:** `addEntry(MealPlanEntry)` (replaces any meal already in that slot), `removeEntry(DayOfWeek, MealType)` (returns whether a meal was removed), `getEntry(DayOfWeek, MealType)`, `getEntries()`, `getEntriesForDay(DayOfWeek)`, `getAllRecipes()`
 
 ### MealPlanEntry
 - **Instance variables:** `day: DayOfWeek`, `mealType: MealType`, `recipe: Recipe`
-- **Methods:** getters
+- **Methods:** getters, `isInSlot(DayOfWeek, MealType)`
+
+### MealType
+- Enum: `BREAKFAST`, `LUNCH`, `DINNER`
 
 ### GroceryItem
 - **Instance variables:** `ingredientName`, `measures: List<String>`, `checked`
