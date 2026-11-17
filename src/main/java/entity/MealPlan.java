@@ -70,6 +70,9 @@ public class MealPlan {
         return null;
     }
 
+    /**
+     * Returns a read-only list of the entries planned for the given day.
+     */
     public List<MealPlanEntry> getEntriesForDay(DayOfWeek day) {
         List<MealPlanEntry> result = new ArrayList<>();
         for (MealPlanEntry entry : entries) {
@@ -77,7 +80,7 @@ public class MealPlan {
                 result.add(entry);
             }
         }
-        return result;
+        return Collections.unmodifiableList(result);
     }
 
     /**
