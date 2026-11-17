@@ -13,8 +13,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Tests for {@link GenerateGroceryListInteractor}, using in-memory storage and
+ * a presenter that records what it receives.
+ */
 public class GenerateGroceryListInteractorTest {
 
+    /**
+     * Records what the interactor presents; a field stays null if its method
+     * was not called.
+     */
     private static class RecordingPresenter implements GenerateGroceryListOutputBoundary {
 
         GenerateGroceryListOutputData outputData;
@@ -31,10 +39,18 @@ public class GenerateGroceryListInteractorTest {
         }
     }
 
+    /**
+     * Creates a recipe with the given ingredients and placeholder values for
+     * the fields these tests do not use.
+     */
     private static Recipe recipe(String id, Ingredient... ingredients) {
         return new Recipe(id, "Recipe " + id, "", List.of(ingredients), "", "");
     }
 
+    /**
+     * Creates a plan with each recipe as dinner on its own day, starting on
+     * Monday, so no recipe replaces another. Takes at most seven recipes.
+     */
     private static MealPlan planWith(Recipe... recipes) {
         MealPlan mealPlan = new MealPlan(LocalDate.of(2023, 3, 13));
 

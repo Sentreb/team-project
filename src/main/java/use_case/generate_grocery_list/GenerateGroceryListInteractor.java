@@ -10,25 +10,35 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Generates the grocery list for the weekly plan (Use Case 4).
+ *
+ * <p>Ingredients with the same name are combined into one item, ignoring case,
+ * and the item keeps every measure. The item is named with the spelling first
+ * seen in the plan. A recipe planned twice contributes its measures twice.</p>
+ */
 public class GenerateGroceryListInteractor implements GenerateGroceryListInputBoundary {
     private final GenerateGroceryListDataAccessInterface dataAccess;
     private final GenerateGroceryListOutputBoundary presenter;
 
+    /**
+     * Creates the interactor.
+     *
+     * @param dataAccessInterface where the plan is read from and the list is saved to
+     * @param presenter           where the result is sent
+     */
     public GenerateGroceryListInteractor(GenerateGroceryListDataAccessInterface dataAccessInterface, GenerateGroceryListOutputBoundary presenter) {
         this.dataAccess = dataAccessInterface;
         this.presenter = presenter;
     }
 
+    /**
+     * Builds the grocery list from every recipe in the plan, saves it in place
+     * of any previous list, and presents it. If the plan has no meals, presents
+     * an error and saves nothing.
+     */
     @Override
     public void execute() {
-        // 1. get meal plan from the DAO
-        // 2. if it has no recipes -> prepareFailView("Add meals to your plan first"), return
-        // 3. for each recipe in meal plan
-        //      for each ingredient in recipe
-        //          find GroceryItem(), if not found, create one
-        //          addMeasure(ingredient's measure)
-        // 4. save the list through the DAO (replaces the old one)
-        // 5. prepareSuccessView
         MealPlan plan = dataAccess.getMealPlan();
         List<Recipe> recipes = plan.getAllRecipes();
         if (recipes.isEmpty()) {
