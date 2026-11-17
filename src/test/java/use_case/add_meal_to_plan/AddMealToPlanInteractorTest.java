@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,17 +26,19 @@ class AddMealToPlanInteractorTest {
     private final Recipe pancakes = new Recipe("52854", "Pancakes", "Dessert",
             List.of(new Ingredient("flour", "100g")), "Fry them.", "");
 
+    private final Map<String, Recipe> savedRecipes = new HashMap<>();
+    private final SavedRecipeLookup recipeLookup = savedRecipes::get;
     private InMemoryMealPlanDataAccessObject dataAccess;
     private RecordingPresenter presenter;
     private AddMealToPlanInteractor interactor;
 
     @BeforeEach
     void setUp() {
+        savedRecipes.put(teriyaki.getApiId(), teriyaki);
+        savedRecipes.put(pancakes.getApiId(), pancakes);
         dataAccess = new InMemoryMealPlanDataAccessObject(WEEK_START);
-        dataAccess.addSavedRecipe(teriyaki);
-        dataAccess.addSavedRecipe(pancakes);
         presenter = new RecordingPresenter();
-        interactor = new AddMealToPlanInteractor(dataAccess, presenter);
+        interactor = new AddMealToPlanInteractor(recipeLookup, dataAccess, presenter);
     }
 
     @Test
@@ -54,7 +58,7 @@ class AddMealToPlanInteractorTest {
     void filledSlotAsksBeforeReplacing() {
         interactor.execute(new AddMealToPlanInputData("52772", DayOfWeek.MONDAY, MealType.DINNER, false));
         presenter = new RecordingPresenter();
-        interactor = new AddMealToPlanInteractor(dataAccess, presenter);
+        interactor = new AddMealToPlanInteractor(recipeLookup, dataAccess, presenter);
 
         interactor.execute(new AddMealToPlanInputData("52854", DayOfWeek.MONDAY, MealType.DINNER, false));
 
@@ -85,10 +89,6 @@ class AddMealToPlanInteractorTest {
     @Test
     void storageFailureLeavesPlanUnchanged() {
         AddMealToPlanDataAccessInterface failingDataAccess = new AddMealToPlanDataAccessInterface() {
-            @Override
-            public Recipe getSavedRecipe(String apiId) {
-                return dataAccess.getSavedRecipe(apiId);
-            }
 
             @Override
             public MealPlan getMealPlan() {
@@ -100,7 +100,7 @@ class AddMealToPlanInteractorTest {
                 throw new MealPlanStorageException("Database unavailable.");
             }
         };
-        interactor = new AddMealToPlanInteractor(failingDataAccess, presenter);
+        interactor = new AddMealToPlanInteractor(recipeLookup, failingDataAccess, presenter);
 
         interactor.execute(new AddMealToPlanInputData("52772", DayOfWeek.MONDAY, MealType.DINNER, false));
 
