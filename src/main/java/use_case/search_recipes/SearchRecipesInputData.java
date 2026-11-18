@@ -1,25 +1,34 @@
 package use_case.search_recipes;
 
+/**
+ * The user's request to search for recipes: the text they entered and
+ * whether it is a recipe name or a single ingredient.
+ */
 public class SearchRecipesInputData {
-    private final String searchPhrase;
-    private final boolean searchByName;
-    private final boolean searchByIngredient;
+    private final String query;
+    private final SearchType searchType;
 
-    public SearchRecipesInputData(String searchPhrase, boolean searchByName,
-                                  boolean searchByIngredient) {
-        this.searchPhrase = searchPhrase;
-        this.searchByName = searchByName;
-        this.searchByIngredient = searchByIngredient;
+    /**
+     * Creates a search request.
+     *
+     * @param query      the text the user entered; may be null or blank, the
+     *                   interactor reports that to the user
+     * @param searchType whether to search by name or by ingredient
+     * @throws IllegalArgumentException if searchType is null
+     */
+    public SearchRecipesInputData(String query, SearchType searchType) {
+        if (searchType == null) {
+            throw new IllegalArgumentException("Search type must not be null.");
+        }
+        this.query = query;
+        this.searchType = searchType;
     }
 
-    public String getSearchPhrase() {
-        return searchPhrase;
+    public String getQuery() {
+        return query;
     }
 
-    public boolean isSearchByName() {
-        return searchByName;
-    }
-    public boolean isSearchByIngredient() {
-        return searchByIngredient;
+    public SearchType getSearchType() {
+        return searchType;
     }
 }
