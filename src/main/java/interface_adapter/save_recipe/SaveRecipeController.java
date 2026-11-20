@@ -9,7 +9,7 @@ import use_case.save_recipe.SaveRecipeInputData;
  */
 public class SaveRecipeController {
 
-    // TODO(Clifford): declare the field for the use case this controller calls
+    private final SaveRecipeInputBoundary saveRecipeInteractor;
 
     /**
      * Creates the controller.
@@ -17,7 +17,7 @@ public class SaveRecipeController {
      * @param saveRecipeInteractor the Save Recipe use case
      */
     public SaveRecipeController(SaveRecipeInputBoundary saveRecipeInteractor) {
-        // TODO(Clifford): store the input boundary
+        this.saveRecipeInteractor = saveRecipeInteractor;
     }
 
     /**
@@ -26,6 +26,6 @@ public class SaveRecipeController {
      * @param apiId the TheMealDB id of the recipe to save
      */
     public void execute(String apiId) {
-        // TODO(Clifford): build the input data and pass it to the use case
+        saveRecipeInteractor.execute(new SaveRecipeInputData(apiId));
     }
 }
