@@ -22,7 +22,7 @@ public class SaveRecipeInputData {
      *
      * @return the recipe's apiId
      */
-    String getApiId() {
+    public String getApiId() {
         return apiId;
     }
 }
