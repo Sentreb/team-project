@@ -18,14 +18,19 @@ import interface_adapter.search.SearchController;
 import interface_adapter.search.SearchPresenter;
 import interface_adapter.search.SearchResultItem;
 import interface_adapter.search.SearchViewModel;
+import interface_adapter.view_saved_recipes.ViewSavedRecipesController;
+import interface_adapter.view_saved_recipes.ViewSavedRecipesPresenter;
+import interface_adapter.view_saved_recipes.ViewSavedRecipesViewModel;
 import use_case.generate_grocery_list.GenerateGroceryListInteractor;
 import use_case.save_recipe.SaveRecipeInteractor;
 import use_case.search_recipes.SearchRecipesInteractor;
+import use_case.view_saved_recipes.ViewSavedRecipesInteractor;
 import view.GroceryListView;
 import view.MealPlanView;
 import view.SaveRecipePanel;
 import view.SearchView;
 import view.ViewManager;
+import view.SavedRecipesView;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -73,6 +78,7 @@ public class AppBuilder {
     private String searchViewName;
     private String mealPlanViewName;
     private String groceryListViewName;
+    private String savedRecipesViewName;
 
     /**
      * Adds the home screen shown when the app starts.
@@ -136,6 +142,26 @@ public class AppBuilder {
 
         searchViewName = searchView.getViewName();
         cardPanel.add(searchCard, searchViewName);
+        return this;
+    }
+
+    /**
+     * Adds the saved recipes screen with the View Saved Recipes use case.
+     * The view is added straight to the card panel, because it reloads itself
+     * on componentShown, which only fires on the card itself.
+     *
+     * @return this builder
+     */
+    public AppBuilder addSavedRecipesView() {
+        ViewSavedRecipesViewModel viewModel = new ViewSavedRecipesViewModel();
+        ViewSavedRecipesPresenter presenter = new ViewSavedRecipesPresenter(viewModel);
+        ViewSavedRecipesInteractor interactor =
+                new ViewSavedRecipesInteractor(recipeDataAccess, presenter);
+        ViewSavedRecipesController controller = new ViewSavedRecipesController(interactor);
+        SavedRecipesView savedRecipesView = new SavedRecipesView(viewModel, controller);
+
+        savedRecipesViewName = savedRecipesView.getViewName();
+        cardPanel.add(savedRecipesView, savedRecipesViewName);
         return this;
     }
 
@@ -206,6 +232,11 @@ public class AppBuilder {
             JButton searchButton = new JButton("Search Recipes");
             searchButton.addActionListener(event -> showView(searchViewName));
             bar.add(searchButton);
+        }
+        if (savedRecipesViewName != null) {
+            JButton savedButton = new JButton("Saved Recipes");
+            savedButton.addActionListener(event -> showView(savedRecipesViewName));
+            bar.add(savedButton);
         }
         if (mealPlanViewName != null) {
             JButton planButton = new JButton("Meal Plan");
