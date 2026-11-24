@@ -19,6 +19,7 @@ public class Main {
             JFrame application = appBuilder
                     .addHomeView()
                     .addSearchView()
+                    .addSavedRecipesView()
                     .addMealPlanView()
                     .addGroceryListView()
                     .build();
