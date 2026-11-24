@@ -97,12 +97,15 @@ public class MealPlanView extends JPanel implements MealPlanViewModelListener {
     @Override
     public void stateChanged() {
         MealPlanState state = viewModel.getState();
-        if (state.getErrorMessage() != null) {
-            JOptionPane.showMessageDialog(this, state.getErrorMessage(),
+        // take...() clears each one-off message, so a later refresh never shows it again.
+        String errorMessage = state.takeErrorMessage();
+        String recipeToReplace = state.takeRecipeToReplace();
+        if (errorMessage != null) {
+            JOptionPane.showMessageDialog(this, errorMessage,
                     "Meal not added", JOptionPane.ERROR_MESSAGE);
-        } else if (state.getRecipeToReplace() != null) {
+        } else if (recipeToReplace != null) {
             int answer = JOptionPane.showConfirmDialog(this,
-                    "This slot already has " + state.getRecipeToReplace() + ". Replace it?",
+                    "This slot already has " + recipeToReplace + ". Replace it?",
                     "Replace meal?", JOptionPane.YES_NO_OPTION);
             if (answer == JOptionPane.YES_OPTION) {
                 addSelectedMeal(true);
@@ -111,6 +114,7 @@ public class MealPlanView extends JPanel implements MealPlanViewModelListener {
         }
         refresh(state);
     }
+
 
     private void addSelectedMeal(boolean replaceExisting) {
         RecipeChoice recipe = (RecipeChoice) recipeChoices.getSelectedItem();
