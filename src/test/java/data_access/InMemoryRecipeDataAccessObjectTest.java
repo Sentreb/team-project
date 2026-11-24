@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import entity.Recipe;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -67,6 +68,53 @@ class InMemoryRecipeDataAccessObjectTest {
     assertEquals("Chicken Teriyaki", foundTeriyaki.getName());
     assertEquals("52662", foundBarbecue.getApiId());
     assertEquals("Chicken Barbeque", foundBarbecue.getName());
+  }
+
+  @Test
+  void nothingSavedReturnsEmptyList() {
+    // Arrange: an empty DAO
+    InMemoryRecipeDataAccessObject dataAccess = new InMemoryRecipeDataAccessObject();
+
+    // Act: get the saved recipes
+    List<Recipe> saved = dataAccess.getSavedRecipes();
+
+    // Assert: the list is empty
+    assertTrue(saved.isEmpty());
+  }
+
+  @Test
+  void savedRecipesComeBackInSavedOrder() {
+    // Arrange: an empty DAO and many apiIds in non-sorted order
+    InMemoryRecipeDataAccessObject dataAccess = new InMemoryRecipeDataAccessObject();
+    List<String> apiIds = List.of("52900", "52772", "53010", "52662", "52999",
+        "52800", "53065", "52701", "52955", "52834");
+
+    // Act: save each one, then get the saved recipes
+    for (String apiId : apiIds) {
+      dataAccess.save(recipe(apiId, "Recipe " + apiId));
+    }
+    List<String> savedApiIds = new ArrayList<>();
+    for (Recipe saved : dataAccess.getSavedRecipes()) {
+      savedApiIds.add(saved.getApiId());
+    }
+
+    // Assert: the apiIds match the order they were saved in
+    assertEquals(apiIds, savedApiIds);
+  }
+
+  @Test
+  void changingReturnedListDoesNotChangeStoredRecipes() {
+    // Arrange: a DAO with one saved recipe
+    InMemoryRecipeDataAccessObject dataAccess = new InMemoryRecipeDataAccessObject();
+    dataAccess.save(recipe("52772", "Chicken Teriyaki"));
+
+    // Act: clear the returned list
+    dataAccess.getSavedRecipes().clear();
+
+    // Assert: the recipe is still stored
+    List<Recipe> saved = dataAccess.getSavedRecipes();
+    assertEquals(1, saved.size());
+    assertEquals("52772", saved.get(0).getApiId());
   }
 
   /**
