@@ -45,11 +45,11 @@ public class AddMealToPlanInteractor implements AddMealToPlanInputBoundary {
             return;
         }
 
-        MealPlanEntry entry = new MealPlanEntry(inputData.getDay(), inputData.getMealType(), recipe);
+        MealPlanEntry entry =
+                new MealPlanEntry(inputData.getDay(), inputData.getMealType(), recipe);
         try {
             planDataAccess.saveEntry(entry);
-        }
-        catch (MealPlanStorageException exception) {
+        } catch (MealPlanStorageException exception) {
             presenter.prepareFailView("The meal was not added. Please try again.");
             return;
         }
