@@ -3,6 +3,10 @@ package app;
 import interface_adapter.meal_plan.AddMealToPlanController;
 import interface_adapter.meal_plan.AddMealToPlanPresenter;
 import interface_adapter.meal_plan.MealPlanViewModel;
+import interface_adapter.meal_plan.MealPlanRecipeOptionsPresenter;
+import interface_adapter.view_saved_recipes.ViewSavedRecipesController;
+import use_case.view_saved_recipes.ViewSavedRecipesDataAccessInterface;
+import use_case.view_saved_recipes.ViewSavedRecipesInteractor;
 import use_case.add_meal_to_plan.AddMealToPlanDataAccessInterface;
 import use_case.add_meal_to_plan.AddMealToPlanInteractor;
 import use_case.add_meal_to_plan.SavedRecipeLookup;
@@ -34,6 +38,24 @@ public final class MealPlanUseCaseFactory {
                 new AddMealToPlanInteractor(recipeLookup, planDataAccess, presenter);
         AddMealToPlanController controller = new AddMealToPlanController(interactor);
         return new MealPlanView(viewModel, controller);
+
     }
+    /**
+     * Creates the controller that refreshes the meal plan's recipe drop-down. It
+     * runs the View Saved Recipes use case with a presenter for the meal plan
+     * screen, so the drop-down always lists what is saved right now.
+     *
+     * @param viewModel  the meal plan view model whose recipe options are updated
+     * @param recipeList where the saved recipes are listed from
+     * @return a controller; call {@code execute()} to refresh the drop-down
+     */
+    public static ViewSavedRecipesController createRecipeOptionsLoader(
+            MealPlanViewModel viewModel, ViewSavedRecipesDataAccessInterface recipeList) {
+        MealPlanRecipeOptionsPresenter presenter = new MealPlanRecipeOptionsPresenter(viewModel);
+        ViewSavedRecipesInteractor interactor =
+                new ViewSavedRecipesInteractor(recipeList, presenter);
+        return new ViewSavedRecipesController(interactor);
+    }
+
 }
 
