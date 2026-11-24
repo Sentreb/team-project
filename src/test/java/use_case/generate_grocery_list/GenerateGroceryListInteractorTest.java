@@ -66,7 +66,7 @@ public class GenerateGroceryListInteractorTest {
 
     @Test
     void emptyPlanCallsFailView() {
-        InMemoryGroceryListDataAccessObject dao = new InMemoryGroceryListDataAccessObject(planWith());
+        InMemoryGroceryListDataAccessObject dao = new InMemoryGroceryListDataAccessObject(() -> planWith());
         RecordingPresenter presenter = new RecordingPresenter();
         GenerateGroceryListInteractor interactor = new GenerateGroceryListInteractor(dao, presenter);
 
@@ -82,7 +82,7 @@ public class GenerateGroceryListInteractorTest {
         Recipe a = recipe("1", new Ingredient("Onion", "1"));
         Recipe b = recipe("2", new Ingredient("Onion", "3"));
 
-        InMemoryGroceryListDataAccessObject dao = new InMemoryGroceryListDataAccessObject(planWith(a, b));
+        InMemoryGroceryListDataAccessObject dao = new InMemoryGroceryListDataAccessObject(() -> planWith(a, b));
         RecordingPresenter presenter = new RecordingPresenter();
         GenerateGroceryListInteractor interactor = new GenerateGroceryListInteractor(dao, presenter);
 
@@ -96,7 +96,7 @@ public class GenerateGroceryListInteractorTest {
         Recipe a = recipe("1", new Ingredient("Onion", "1"));
         Recipe b = recipe("2", new Ingredient("onion", "3"));
 
-        InMemoryGroceryListDataAccessObject dao = new InMemoryGroceryListDataAccessObject(planWith(a, b));
+        InMemoryGroceryListDataAccessObject dao = new InMemoryGroceryListDataAccessObject(() -> planWith(a, b));
         RecordingPresenter presenter = new RecordingPresenter();
         GenerateGroceryListInteractor interactor = new GenerateGroceryListInteractor(dao, presenter);
 
@@ -109,7 +109,7 @@ public class GenerateGroceryListInteractorTest {
     void blankMeasureGivesEmptyMeasure() {
         Recipe a = recipe("1", new Ingredient("Salt", ""));
 
-        InMemoryGroceryListDataAccessObject dao = new InMemoryGroceryListDataAccessObject(planWith(a));
+        InMemoryGroceryListDataAccessObject dao = new InMemoryGroceryListDataAccessObject(() -> planWith(a));
         RecordingPresenter presenter = new RecordingPresenter();
         GenerateGroceryListInteractor interactor = new GenerateGroceryListInteractor(dao, presenter);
 
@@ -123,7 +123,7 @@ public class GenerateGroceryListInteractorTest {
         Recipe a = recipe("1", new Ingredient("Rice", "1"), new Ingredient("Onion", "1"));
         Recipe b = recipe("2", new Ingredient("Rice", "3"));
 
-        InMemoryGroceryListDataAccessObject dao = new InMemoryGroceryListDataAccessObject(planWith(a, b));
+        InMemoryGroceryListDataAccessObject dao = new InMemoryGroceryListDataAccessObject(() -> planWith(a, b));
         RecordingPresenter presenter = new RecordingPresenter();
         GenerateGroceryListInteractor interactor = new GenerateGroceryListInteractor(dao, presenter);
 
@@ -137,7 +137,7 @@ public class GenerateGroceryListInteractorTest {
         Recipe a = recipe("1", new Ingredient("Rice", "1 cup"), new Ingredient("Onion", "1"));
         Recipe b = recipe("2", new Ingredient("Garlic", "2 cloves"), new Ingredient("Rice", "2 cups"));
 
-        InMemoryGroceryListDataAccessObject dao = new InMemoryGroceryListDataAccessObject(planWith(a, b));
+        InMemoryGroceryListDataAccessObject dao = new InMemoryGroceryListDataAccessObject(() -> planWith(a, b));
         RecordingPresenter presenter = new RecordingPresenter();
         GenerateGroceryListInteractor interactor = new GenerateGroceryListInteractor(dao, presenter);
 
@@ -158,7 +158,7 @@ public class GenerateGroceryListInteractorTest {
     void recipePlannedTwiceDoublesMeasures() {
         Recipe a = recipe("1", new Ingredient("Onion", "1"));
 
-        InMemoryGroceryListDataAccessObject dao = new InMemoryGroceryListDataAccessObject(planWith(a, a));
+        InMemoryGroceryListDataAccessObject dao = new InMemoryGroceryListDataAccessObject(() -> planWith(a, a));
         RecordingPresenter presenter = new RecordingPresenter();
         GenerateGroceryListInteractor interactor = new GenerateGroceryListInteractor(dao, presenter);
 
