@@ -1,9 +1,13 @@
 package app;
 
+import data_access.InMemoryGroceryListDataAccessObject;
 import data_access.InMemoryMealPlanDataAccessObject;
 import data_access.InMemoryRecipeDataAccessObject;
 import data_access.MealDbApiGateway;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.grocery_list.GenerateGroceryListController;
+import interface_adapter.grocery_list.GenerateGroceryListPresenter;
+import interface_adapter.grocery_list.GroceryListViewModel;
 import interface_adapter.meal_plan.MealPlanState;
 import interface_adapter.meal_plan.MealPlanViewModel;
 import interface_adapter.save_recipe.SaveRecipeController;
@@ -14,8 +18,10 @@ import interface_adapter.search.SearchController;
 import interface_adapter.search.SearchPresenter;
 import interface_adapter.search.SearchResultItem;
 import interface_adapter.search.SearchViewModel;
+import use_case.generate_grocery_list.GenerateGroceryListInteractor;
 import use_case.save_recipe.SaveRecipeInteractor;
 import use_case.search_recipes.SearchRecipesInteractor;
+import view.GroceryListView;
 import view.MealPlanView;
 import view.SaveRecipePanel;
 import view.SearchView;
@@ -41,9 +47,6 @@ import java.util.Map;
  * a card layout managed by the {@link ViewManager}.
  *
  * <p>Usage: call the {@code add...} methods, then {@link #build()}.</p>
- *
- * <p>The grocery list use case is not wired in yet because it has no
- * controller, presenter or view.</p>
  */
 public class AppBuilder {
     private static final String HOME_VIEW_NAME = "home";
@@ -57,6 +60,9 @@ public class AppBuilder {
     private final MealDbApiGateway mealDbApiGateway = new MealDbApiGateway();
     private final InMemoryRecipeDataAccessObject recipeDataAccess = new InMemoryRecipeDataAccessObject();
     private final InMemoryMealPlanDataAccessObject mealPlanDataAccess = new InMemoryMealPlanDataAccessObject();
+    // Reads the plan through mealPlanDataAccess on every call, so meals planned later are included.
+    private final InMemoryGroceryListDataAccessObject groceryListDataAccess =
+            new InMemoryGroceryListDataAccessObject(mealPlanDataAccess::getMealPlan);
 
     // Recipes saved this session (apiId -> name), used to fill the meal plan drop-down.
     // The recipe DAO has no "list all" method yet, so the app tracks them itself.
@@ -66,6 +72,7 @@ public class AppBuilder {
     private MealPlanViewModel mealPlanViewModel;
     private String searchViewName;
     private String mealPlanViewName;
+    private String groceryListViewName;
 
     /**
      * Adds the home screen shown when the app starts.
@@ -147,6 +154,26 @@ public class AppBuilder {
     }
 
     /**
+     * Adds the grocery list screen with the Generate Grocery List use case.
+     *
+     * @return this builder
+     */
+    public AppBuilder addGroceryListView() {
+        GroceryListViewModel groceryListViewModel = new GroceryListViewModel();
+        GenerateGroceryListPresenter groceryListPresenter =
+                new GenerateGroceryListPresenter(groceryListViewModel);
+        GenerateGroceryListInteractor groceryListInteractor =
+                new GenerateGroceryListInteractor(groceryListDataAccess, groceryListPresenter);
+        GenerateGroceryListController groceryListController =
+                new GenerateGroceryListController(groceryListInteractor);
+        GroceryListView groceryListView = new GroceryListView(groceryListViewModel, groceryListController);
+
+        groceryListViewName = groceryListView.getViewName();
+        cardPanel.add(groceryListView, groceryListViewName);
+        return this;
+    }
+
+    /**
      * Creates the window: a navigation bar on top and the views below it.
      * Shows the home screen first.
      *
@@ -184,6 +211,11 @@ public class AppBuilder {
             JButton planButton = new JButton("Meal Plan");
             planButton.addActionListener(event -> showMealPlan());
             bar.add(planButton);
+        }
+        if (groceryListViewName != null) {
+            JButton groceryButton = new JButton("Grocery List");
+            groceryButton.addActionListener(event -> showView(groceryListViewName));
+            bar.add(groceryButton);
         }
         return bar;
     }
