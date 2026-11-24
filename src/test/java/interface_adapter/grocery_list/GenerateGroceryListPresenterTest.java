@@ -46,6 +46,32 @@ class GenerateGroceryListPresenterTest {
   }
 
   @Test
+  void repeatedMeasureIsShownOnceWithItsCount() {
+    // Arrange: the same recipe planned three times, so each measure comes three times
+    Map<String, List<String>> items = new LinkedHashMap<>();
+    items.put("Chicken", List.of("8 oz", "8 oz", "8 oz"));
+
+    // Act
+    presenter.prepareSuccessView(new GenerateGroceryListOutputData(items));
+
+    // Assert: one measure with its count, not "8 oz, 8 oz, 8 oz"
+    assertEquals("8 oz × 3", viewModel.getState().getItems().get(0).getMeasures());
+  }
+
+  @Test
+  void onlyIdenticalMeasuresAreGroupedInFirstSeenOrder() {
+    // Arrange: two different measures, one of them twice and once with extra spaces
+    Map<String, List<String>> items = new LinkedHashMap<>();
+    items.put("Onion", List.of("1", "2 slices", " 1 "));
+
+    // Act
+    presenter.prepareSuccessView(new GenerateGroceryListOutputData(items));
+
+    // Assert: "1" is grouped, "2 slices" stays separate, order of first appearance kept
+    assertEquals("1 × 2, 2 slices", viewModel.getState().getItems().get(0).getMeasures());
+  }
+
+  @Test
   void ingredientWithNoMeasuresShowsEmptyMeasures() {
     // Arrange: an ingredient whose measures were all blank in TheMealDB
     Map<String, List<String>> items = new LinkedHashMap<>();
