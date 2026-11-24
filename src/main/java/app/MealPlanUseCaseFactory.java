@@ -11,7 +11,7 @@ import view.MealPlanView;
 /**
  * Builds the meal plan screen with the Add Meal to Plan use case wired in.
  * Keeping the wiring here means adding the screen to the app is a single call
- * from AppBuilder, and the demo launcher uses exactly the same wiring.
+ * from AppBuilder, so the shared app can include it without knowing its internals.
  */
 public final class MealPlanUseCaseFactory {
 
