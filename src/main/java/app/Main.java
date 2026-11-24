@@ -20,6 +20,7 @@ public class Main {
                     .addHomeView()
                     .addSearchView()
                     .addMealPlanView()
+                    .addGroceryListView()
                     .build();
             application.setVisible(true);
         });
