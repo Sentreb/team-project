@@ -86,6 +86,18 @@ public class MealPlanState {
     }
 
     /**
+     * Returns the error to show the user and clears it, so the view shows each
+     * error only once even if the state is refreshed again later.
+     *
+     * @return the error message, or null if there is none to show
+     */
+    public String takeErrorMessage() {
+        String message = errorMessage;
+        errorMessage = null;
+        return message;
+    }
+
+    /**
      * Returns the name of the recipe the user is being asked to replace, or
      * null if no confirmation is needed.
      *
@@ -97,6 +109,18 @@ public class MealPlanState {
 
     public void setRecipeToReplace(String recipeToReplace) {
         this.recipeToReplace = recipeToReplace;
+    }
+
+    /**
+     * Returns the recipe the user should be asked about replacing and clears
+     * it, so the question is asked only once whether the user answers Yes or No.
+     *
+     * @return the recipe currently in the chosen slot, or null if there is no question
+     */
+    public String takeRecipeToReplace() {
+        String recipe = recipeToReplace;
+        recipeToReplace = null;
+        return recipe;
     }
 
     private static String slotKey(String day, String mealSlot) {
